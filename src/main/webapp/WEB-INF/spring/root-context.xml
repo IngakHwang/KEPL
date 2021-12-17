@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+						http://www.springframework.org/schema/beans/spring-beans.xsd 
+						http://www.springframework.org/schema/context 
+						http://www.springframework.org/schema/context/spring-context.xsd
+						http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+        <property name="url" value="jdbc:log4jdbc:mysql://49.50.165.121:3306/kdt13?serverTimezone=UTC&amp;useSSL=false"/>
+        <property name="username" value="root" />
+        <property name="password" value="mcsn504" />
+    </bean>
+<!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
+        <property name="url" value="jdbc:log4jdbc:mysql://127.0.0.1:3306/kdt13?serverTimezone=UTC&amp;useSSL=false"/>
+        <property name="username" value="root" />
+        <property name="password" value="1234" />
+    </bean> -->
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:/mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath:mappers/**/*Mapper.xml"/>
+    </bean>
+    
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"/>
+    </bean>
+    
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    	<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+<!-- 	<bean id="uploadPath" class="java.lang.String">
+        <constructor-arg value="/opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/upload">
+        </constructor-arg>
+    </bean>
+    
+    프로필 이미지 파일 저장 경로 설정
+    <bean id="uimagePath" class="java.lang.String">
+        <constructor-arg value="/opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/dist/img/profile">
+        </constructor-arg>
+    </bean> -->
+    
+    <bean id="uploadPath" class="java.lang.String">
+        <constructor-arg value="C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\upload">
+        </constructor-arg>
+    </bean>
+    
+    프로필 이미지 파일 저장 경로 설정
+    <bean id="uimagePath" class="java.lang.String">
+        <constructor-arg value="C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\dist\\img\\profile">
+        </constructor-arg>
+    </bean>
+
+	<!-- 	
+	C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\upload
+	C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\dist\\img\\profile
+	-->
+	
+    <!-- 
+    /opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/upload
+    /opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/dist/img/profile
+    -->
+
+	<tx:annotation-driven/>
+    
+    <context:component-scan base-package="mc.sn.KEPL"/>	
+</beans>

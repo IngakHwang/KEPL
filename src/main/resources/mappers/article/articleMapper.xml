@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mc.sn.KEPL.mappers.article.ArticleMapper">
+
+    <insert id="create" useGeneratedKeys="true" keyProperty="article_no">
+        INSERT INTO tb_article (
+            title
+            , content
+            , writer
+            , file_cnt
+            , writerImg
+            , addr
+            , hashtag
+            , category
+        ) VALUES (
+             #{title}
+            , #{content}
+            , #{writer}
+            , #{fileCnt}
+            , #{writerImg}
+            , #{addr}
+            , #{hashtag}
+            , #{category}
+        )
+    </insert>
+	
+	<!--회원 프로필 이미지 변경-->
+    <update id="updateWriterImg" >
+        UPDATE tb_article
+        SET
+            writerImg = (SELECT user_img FROM tb_user WHERE user_id = #{writer})
+        WHERE article_no = #{article_no}
+    </update>
+	
+    <select id="read" resultMap="ArticleResultMap">
+        SELECT
+            article_no
+            , title
+            , content
+            , writer
+            , regdate
+            , viewcnt
+            , file_cnt
+            , writerImg
+            , addr
+            , hashtag
+            , category
+        FROM
+            tb_article
+        WHERE article_no = #{article_no}
+    </select>
+
+
+    <update id="update">
+        UPDATE tb_article
+        SET
+            title = #{title}
+            , content = #{content}
+            , file_cnt = #{fileCnt}
+            , addr = #{addr}
+            , hashtag = #{hashtag}
+            , category = #{category}
+        WHERE
+            article_no = #{article_no}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM tb_article
+        WHERE article_no = #{article_no}
+    </delete>
+
+	<select id="listPaging" resultMap="ArticleResultMap">
+    <![CDATA[
+        SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0
+        ORDER BY ta.article_no DESC, regdate DESC
+        LIMIT #{page},10
+    ]]>
+	</select>
+	
+	<select id="countArticles" resultType="int">
+    <![CDATA[
+    SELECT
+        COUNT(article_no)
+    FROM tb_article
+    WHERE article_no > 0
+    ]]>
+	</select>
+
+
+	<select id="listSearch" resultMap="ArticleResultMap">
+    <![CDATA[
+        SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY article_no DESC, regdate DESC 
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	
+	
+	
+	<select id="countSearchedArticles" resultType="int">
+    <![CDATA[
+    SELECT
+        COUNT(article_no)
+    FROM tb_article
+    WHERE article_no > 0
+    ]]>
+		<include refid="search" />
+	</select>
+	
+	
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">
+				AND title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'c'.toString()">
+				AND content LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'w'.toString()">
+				AND writer LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'h'.toString()">
+				AND hashtag LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'tc'.toString()">
+				AND (
+				title LIKE CONCAT('%', #{keyword}, '%')
+				OR content LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+			<if test="searchType == 'cw'.toString()">
+				AND (
+				content LIKE CONCAT('%', #{keyword}, '%')
+				OR writer LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+			<if test="searchType == 'tcw'.toString()">
+				AND (
+				title LIKE CONCAT('%', #{keyword}, '%')
+				OR content LIKE CONCAT('%', #{keyword}, '%')
+				OR writer LIKE CONCAT('%', #{keyword}, '%')
+				)
+			</if>
+		</if>
+	</sql>
+	
+	<update id="updateReplycnt">
+	    UPDATE tb_article
+	    SET reply_cnt = reply_cnt + #{amount}
+	    WHERE article_no = #{article_no}
+	</update>
+	
+	<update id="updateViewcnt">
+	    UPDATE tb_article
+	    SET viewcnt = viewcnt + 1
+	    WHERE article_no = #{article_no}
+	</update>
+
+    
+    <select id="userBoardList" resultType="ArticleVO">
+        SELECT
+            *
+        FROM tb_article
+        WHERE writer = #{userId}
+        ORDER BY article_no DESC, regdate DESC
+    </select>
+    
+	<select id="listSearchMovie" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and category='movie' 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY article_no DESC, regdate DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="listSearchDrama" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and category='drama' 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY article_no DESC, regdate DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="listSearchKpop" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and category='k-pop' 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY article_no DESC, regdate DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="listSearchBest" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and likes_cnt>4 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY article_no DESC, regdate DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="countSearchMovie" resultType="int">
+	<![CDATA[
+		SELECT 
+		COUNT(article_no) 
+		FROM tb_article 
+		WHERE article_no>0 and category='movie'
+	]]>
+		<include refid="search"/>
+	</select>
+	
+	<select id="countSearchDrama" resultType="int">
+	<![CDATA[
+		SELECT 
+		COUNT(article_no) 
+		FROM tb_article 
+		WHERE article_no>0 and category='drama'
+	]]>
+		<include refid="search"/>
+	</select>
+	
+	<select id="countSearchKpop" resultType="int">
+	<![CDATA[
+		SELECT 
+		COUNT(article_no) 
+		FROM tb_article 
+		WHERE article_no>0 and category='k-pop'
+	]]>
+		<include refid="search"/>
+	</select>
+	
+	<select id="countSearchBest" resultType="int">
+	<![CDATA[
+		SELECT 
+		COUNT(article_no) 
+		FROM tb_article 
+		WHERE article_no>0 and likes_cnt>4
+	]]>
+		<include refid="search"/>
+	</select>
+    
+    <select id="maxBlnoMovie" resultMap="ArticleResultMap">
+    <![CDATA[
+       SELECT
+            ta.article_no,
+            title,
+            regdate,
+            hashtag,
+            replace(fullname,'s_','') fullname,
+            likes_cnt
+            ]]>
+    <include refid="join" />
+    <![CDATA[
+        WHERE ta.article_no > 0 and category='movie'
+        ORDER BY likes_cnt DESC LIMIT 1
+    ]]>
+    </select>
+    
+ 	<select id="maxBlnoDrama" resultMap="ArticleResultMap">
+    <![CDATA[
+       SELECT
+            ta.article_no,
+            title,
+            regdate,
+            hashtag,
+            replace(fullname,'s_','') fullname,
+            likes_cnt
+            ]]>
+    <include refid="join" />
+    <![CDATA[
+        WHERE ta.article_no > 0 and category='drama'
+        ORDER BY likes_cnt DESC LIMIT 1
+    ]]>
+    </select>
+    
+ 	<select id="maxBlnoKpop" resultMap="ArticleResultMap">
+    <![CDATA[
+       SELECT
+            ta.article_no,
+            title,
+            regdate,
+            hashtag,
+            replace(fullname,'s_','') fullname,
+            likes_cnt
+            ]]>
+    <include refid="join" />
+    <![CDATA[
+        WHERE ta.article_no > 0 and category='k-pop'
+        ORDER BY likes_cnt DESC LIMIT 1
+    ]]>
+    </select>
+    
+	<select id="recentMovie" resultMap="ArticleResultMap">
+    <![CDATA[
+       SELECT
+            ta.article_no,
+            title,
+            regdate,
+            hashtag,
+            replace(fullname,'s_','') fullname,
+            likes_cnt
+			]]>
+	<include refid="join" />
+    <![CDATA[
+		WHERE ta.article_no > 0 and category='movie'
+		ORDER BY article_no DESC LIMIT 1
+    ]]>
+    </select>
+    
+	<select id="recentDrama" resultMap="ArticleResultMap">
+    <![CDATA[
+       SELECT
+            ta.article_no,
+            title,
+            regdate,
+            hashtag,
+            replace(fullname,'s_','') fullname,
+            likes_cnt
+			]]>
+	<include refid="join" />
+    <![CDATA[
+		WHERE ta.article_no > 0 and category='drama'
+		ORDER BY article_no DESC LIMIT 1
+    ]]>
+    </select>
+    
+	<select id="recentKpop" resultMap="ArticleResultMap">
+    <![CDATA[
+       SELECT
+            ta.article_no,
+            title,
+            regdate,
+            hashtag,
+            replace(fullname,'s_','') fullname,
+            likes_cnt
+			]]>
+	<include refid="join" />
+    <![CDATA[
+		WHERE ta.article_no > 0 and category='k-pop'
+		ORDER BY article_no DESC LIMIT 1
+    ]]>
+    </select>
+    
+    <update id="updateLikescnt">
+	    UPDATE tb_article
+	    SET likes_cnt = likes_cnt + #{amount}
+	    WHERE article_no = #{article_no}
+	</update>
+	
+	
+	
+	<select id="listSearchMoviebyviewcnt" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and category='movie' 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY viewcnt DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="listSearchDramabyviewcnt" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and category='drama' 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY viewcnt DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="listSearchKpopbyviewcnt" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and category='k-pop' 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY viewcnt DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+	<select id="listSearchBestbyviewcnt" resultMap="ArticleResultMap">
+    <![CDATA[
+    SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 and likes_cnt>4 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY viewcnt DESC
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+
+	<select id="listSearchbyviewcnt" resultMap="ArticleResultMap">
+    <![CDATA[
+        SELECT
+            ta.article_no,
+            title,
+            content,
+            writer,
+            regdate,
+            viewcnt, 
+            file_cnt,
+            reply_cnt,
+            hashtag,
+            fullname,
+            likes_cnt
+        from tb_article as ta
+			left join tb_article_file as taf on ta.article_no = taf.article_no
+        WHERE ta.article_no > 0 
+    ]]>
+		<include refid="search" />
+    <![CDATA[
+    group by title
+    ORDER BY viewcnt DESC 
+    LIMIT #{pageStart}, #{perPageNum}
+    ]]>
+	</select>
+	
+    <sql id="join">
+		from tb_article as ta
+		left join tb_article_file as taf on ta.article_no = taf.article_no
+	</sql>
+    
+    <resultMap id="ArticleResultMap" type="ArticleVO">
+        <id property="article_no" column="article_no"/>
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="writer" column="writer" />
+        <result property="regDate" column="regdate" />
+        <result property="viewCnt" column="viewcnt" />
+        <result property="replyCnt" column="reply_cnt" />
+        <result property="fileCnt" column="file_cnt" />
+        <result property="writerImg" column="writerImg" />
+        <result property="addr" column="addr"/>
+        <result property="hashtag" column="hashtag"/>
+        <result property="fullname" column="fullname" />
+        <result property="category" column="category"/>
+        <result property="likesCnt" column="likes_cnt" /> 
+        <association property="userVO" resultMap="userVOResultMap"/>
+    </resultMap>
+    
+    <resultMap id="userVOResultMap" type="UserVO">
+        <id property="userId" column="user_id"/>
+        <result property="userPw" column="user_pw"/>
+        <result property="userName" column="user_name"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="userJoinDate" column="user_join_date"/>
+        <result property="userLoginDate" column="user_login_date"/>
+        <result property="userSignature" column="user_signature"/>
+        <result property="userImg" column="user_img"/>
+        <result property="userPoint" column="user_point"/>
+        
+    </resultMap>
+
+</mapper>

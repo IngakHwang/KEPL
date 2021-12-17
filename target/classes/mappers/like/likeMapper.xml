@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mc.sn.KEPL.mappers.like.LikeMapper">
+
+  
+    <!--게시글 추천 하기-->
+    <insert id="createBoardLike">
+        INSERT INTO tb_likes (
+            article_no
+            , user_id
+        ) VALUES (
+            #{article_no}
+            , #{userId}
+        )
+    </insert>
+
+    <!--게시글 추천 취소-->
+    <delete id="deleteBoardLike">
+        DELETE FROM tb_likes
+        WHERE article_no = #{article_no}
+              AND user_id = #{userId}
+              
+    </delete>
+
+    <!--게시글 추천수--><!-- SELECT COUNT(article_no) -->
+    <select id="countBoardLikes" resultType="int">
+        SELECT COUNT(blno) 
+        FROM tb_likes
+        WHERE article_no = #{article_no}
+    </select>
+
+    <!--게시글 추천 여부 확인-->
+    <select id="checkBoardLike" resultType="boolean">
+        SELECT COUNT(blno)
+        FROM tb_likes
+        WHERE article_no = #{article_no}
+              AND user_id = #{userId}
+    </select>
+    
+
+    
+    <resultMap id="ArticleResultMap" type="ArticleVO">
+        <id property="article_no" column="article_no"/>
+        <result property="title" column="title" />
+        <result property="content" column="content" />
+        <result property="writer" column="writer" />
+        <result property="regDate" column="regdate" />
+        <result property="viewCnt" column="viewcnt" />
+        <result property="replyCnt" column="reply_cnt" />
+        <result property="fileCnt" column="file_cnt" />
+        <result property="writerImg" column="writerImg" />
+        <result property="likeCnt" column="like_cnt" />
+        <association property="userVO" resultMap="userVOResultMap"/>
+    </resultMap>
+    
+    <resultMap id="userVOResultMap" type="UserVO">
+        <id property="userId" column="user_id"/>
+        <result property="userPw" column="user_pw"/>
+        <result property="userName" column="user_name"/>
+        <result property="userEmail" column="user_email"/>
+        <result property="userJoinDate" column="user_join_date"/>
+        <result property="userLoginDate" column="user_login_date"/>
+        <result property="userSignature" column="user_signature"/>
+        <result property="userImg" column="user_img"/>
+        <result property="userPoint" column="user_point"/>
+        
+    </resultMap>
+    
+</mapper>
