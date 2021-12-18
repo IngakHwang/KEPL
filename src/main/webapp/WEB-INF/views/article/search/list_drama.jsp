@@ -38,15 +38,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 					<div class="col-lg-12">
 						<div class="card">
 							<div class="card-header">
-								<form action="${path}/article/search/list/drama" method="get">
-									<select class="form-control" name="howAsc" id="howAsc" onchange='selectAsc(this.options[this.selectedIndex].value);'>
-										<option value="">:::::: 정렬기준 선택 ::::::</option>
-										<option value="viewcnt">조회순으로 보기</option>
-										<option value="recently">최신순으로 보기</option>
-									</select>
-									<input type="hidden" value='$howAsc' name=howAsc>
-								</form>
-							</div>
+								<button type="button" class="btn btn-primary float-right" id="viewsBtn">
+								 조회순
+								</button>
+								
+								<button type="button" class="mx-3 btn btn-primary float-right" id="recentsBtn">
+								 최신순
+								</button>
+  							</div>
 							<div class="card-body table-responsive p-0">
 								<table class="table table-hover">
 									<thead>
@@ -189,9 +188,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- REQUIRED SCRIPTS -->
  <%@ include file = "../../include/plugin_js.jsp" %>
 <script>
-function selectAsc($howAsc) {
-	location.replace("${path}/article/search/list/drama?howAsc=" + $howAsc);
-}
 
 $(document).ready(function () {
 
@@ -214,6 +210,14 @@ $(document).ready(function () {
     
     $("#writeBtn").on("click", function (event) {
         self.location = "${path}/article/search/write";
+    });
+    
+    $("#viewsBtn").on("click", function (event) {
+        self.location = "${path}/article/search/list/drama/viewcnt";
+    });
+    
+    $("#recentsBtn").on("click", function (event) {
+        self.location = "${path}/article/search/list/drama";
     });
 });
 </script>

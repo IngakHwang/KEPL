@@ -77,8 +77,7 @@ public class ArticlePagingSearchController {
     
     
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model,
-						@RequestParam(value = "howAsc", required=false, defaultValue="") String howAsc) 
+    public String list(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model) 
 						throws Exception {
 
         logger.info("search list() called ...");
@@ -87,13 +86,26 @@ public class ArticlePagingSearchController {
         pageMaker.setCriteria(searchCriteria);
         pageMaker.setTotalCount(articleService.countSearchedArticles(searchCriteria));
         
-		if (howAsc.equals("recently")|| howAsc.equals("")) {
-			model.addAttribute("articles", articleService.listSearch(searchCriteria));
-			System.out.println("최신순 정렬");
-		} else if (howAsc.equals("viewcnt")) {
-			model.addAttribute("articles", articleService.listSearchbyviewcnt(searchCriteria));
-			System.out.println("조회순 정렬");
-		}
+		model.addAttribute("articles", articleService.listSearch(searchCriteria));
+			
+		
+        model.addAttribute("pageMaker", pageMaker);
+
+        
+        return "article/search/list";
+    }
+    
+    @RequestMapping(value = "/list/viewcnt", method = RequestMethod.GET)
+    public String listViewcnt(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model) 
+						throws Exception {
+
+        logger.info("search list() called ...");
+        
+        PageMaker pageMaker = new PageMaker();
+        pageMaker.setCriteria(searchCriteria);
+        pageMaker.setTotalCount(articleService.countSearchedArticles(searchCriteria));
+        
+        model.addAttribute("articles", articleService.listSearchbyviewcnt(searchCriteria));
 
         model.addAttribute("pageMaker", pageMaker);
 
@@ -191,8 +203,7 @@ public class ArticlePagingSearchController {
 	}
 	
 	 @RequestMapping(value = "/list/movie", method = RequestMethod.GET)
-	 public String listMovie(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model,
-			 	@RequestParam(value = "howAsc", required=false, defaultValue="") String howAsc)
+	 public String listMovie(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model)
 	    		throws Exception {
 	    	
 	    	logger.info("search list movie() called ...");
@@ -201,20 +212,29 @@ public class ArticlePagingSearchController {
 	    	pageMaker.setCriteria(searchCriteria);
 	    	pageMaker.setTotalCount(articleService.countSearchMovie(searchCriteria));
 	    	
-			if (howAsc.equals("recently")||howAsc.equals("")) {
-				model.addAttribute("articles", articleService.listSearchMovie(searchCriteria));
-				System.out.println("최신순 정렬");
-			} else if (howAsc.equals("viewcnt")) {
-				model.addAttribute("articles", articleService.listSearchMoviebyviewcnt(searchCriteria));
-				System.out.println("조회순 정렬");
-			}
-	    	
-	    	
+			model.addAttribute("articles", articleService.listSearchMovie(searchCriteria));
+	   
 	    	model.addAttribute("pageMaker", pageMaker);
 	    	
 	    	return "article/search/list_movie";
 	 }
 	 
+	 @RequestMapping(value = "/list/movie/viewcnt", method = RequestMethod.GET)
+	 public String listMovieViewcnt(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model)
+	    		throws Exception {
+	    	
+	    	logger.info("search list movie() called ...");
+	    	
+	    	PageMaker pageMaker = new PageMaker();
+	    	pageMaker.setCriteria(searchCriteria);
+	    	pageMaker.setTotalCount(articleService.countSearchMovie(searchCriteria));
+	    	
+			model.addAttribute("articles", articleService.listSearchMoviebyviewcnt(searchCriteria));
+
+	    	model.addAttribute("pageMaker", pageMaker);
+	    	
+	    	return "article/search/list_movie";
+	 }
 	 @RequestMapping(value = "/list/drama", method = RequestMethod.GET)
 	    public String listDrama(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model,
 	    						@RequestParam(value = "howAsc", required=false, defaultValue="") String howAsc) 
@@ -226,23 +246,48 @@ public class ArticlePagingSearchController {
 	    	pageMaker.setCriteria(searchCriteria);
 	    	pageMaker.setTotalCount(articleService.countSearchDrama(searchCriteria));
 	    	
-	    	
-			if (howAsc.equals("recently")|| howAsc.equals("")) {
-				model.addAttribute("articles", articleService.listSearchDrama(searchCriteria));
-				System.out.println("최신순 정렬");
-			} else if (howAsc.equals("viewcnt")) {
-				model.addAttribute("articles", articleService.listSearchDramabyviewcnt(searchCriteria));
-				System.out.println("조회순 정렬");
-			}
-	    	
+			model.addAttribute("articles", articleService.listSearchDrama(searchCriteria));
+
 	    	model.addAttribute("pageMaker", pageMaker);
 	    	
 	    	return "article/search/list_drama";
 	    }
 	 
+	 @RequestMapping(value = "/list/drama/viewcnt", method = RequestMethod.GET)
+	    public String listDramaViewcnt(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model) 
+	    				throws Exception {
+	    	
+	    	logger.info("search list drama() called ...");
+	    	
+	    	PageMaker pageMaker = new PageMaker();
+	    	pageMaker.setCriteria(searchCriteria);
+	    	pageMaker.setTotalCount(articleService.countSearchDrama(searchCriteria));
+
+			model.addAttribute("articles", articleService.listSearchDramabyviewcnt(searchCriteria));
+
+	    	model.addAttribute("pageMaker", pageMaker);
+	    	
+	    	return "article/search/list_drama";
+	    }
 	    @RequestMapping(value = "/list/kpop", method = RequestMethod.GET)
-	    public String listKpop(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model,
-	    						@RequestParam(value = "howAsc", required=false, defaultValue="") String howAsc) 
+	    public String listKpop(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model) 
+	    						throws Exception {
+	    	
+	    	logger.info("search list k-pop() called ...");
+	    	
+	    	PageMaker pageMaker = new PageMaker();
+	    	pageMaker.setCriteria(searchCriteria);
+	    	pageMaker.setTotalCount(articleService.countSearchKpop(searchCriteria));
+
+			model.addAttribute("articles", articleService.listSearchKpop(searchCriteria));
+
+	    	model.addAttribute("pageMaker", pageMaker);
+	    	
+	    	return "article/search/list_kpop";
+	    }
+	    
+	    @RequestMapping(value = "/list/kpop/viewcnt", method = RequestMethod.GET)
+	    public String listKpopViewcnt(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model) 
 	    						throws Exception {
 	    	
 	    	logger.info("search list k-pop() called ...");
@@ -251,20 +296,31 @@ public class ArticlePagingSearchController {
 	    	pageMaker.setCriteria(searchCriteria);
 	    	pageMaker.setTotalCount(articleService.countSearchKpop(searchCriteria));
 	    	
-			if (howAsc.equals("recently")|| howAsc.equals("")) {
-				model.addAttribute("articles", articleService.listSearchKpop(searchCriteria));
-				System.out.println("최신순 정렬");
-			} else if (howAsc.equals("viewcnt")) {
-				model.addAttribute("articles", articleService.listSearchKpopbyviewcnt(searchCriteria));
-				System.out.println("조회순 정렬");
-			}
-			
+			model.addAttribute("articles", articleService.listSearchKpopbyviewcnt(searchCriteria));
+
 	    	model.addAttribute("pageMaker", pageMaker);
 	    	
 	    	return "article/search/list_kpop";
 	    }
 	    
 	    @RequestMapping(value = "/list/best", method = RequestMethod.GET)
+	    public String listBest(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model) 
+								throws Exception {
+	    	
+	    	logger.info("search list best() called ...");
+	    	
+	    	PageMaker pageMaker = new PageMaker();
+	    	pageMaker.setCriteria(searchCriteria);
+	    	pageMaker.setTotalCount(articleService.countSearchBest(searchCriteria));
+	    	
+	    	model.addAttribute("articles", articleService.listSearchBest(searchCriteria));
+
+	    	model.addAttribute("pageMaker", pageMaker);
+	    	
+	    	return "article/search/list_best";
+	    }
+	    
+	    @RequestMapping(value = "/list/best/viewcnt", method = RequestMethod.GET)
 	    public String listBest(@ModelAttribute("searchCriteria") SearchCriteria searchCriteria, Model model,
 								@RequestParam(value = "howAsc", required=false, defaultValue="") String howAsc) 
 								throws Exception {
@@ -275,16 +331,8 @@ public class ArticlePagingSearchController {
 	    	pageMaker.setCriteria(searchCriteria);
 	    	pageMaker.setTotalCount(articleService.countSearchBest(searchCriteria));
 	    	
-	    	model.addAttribute("articles", articleService.listSearchBest(searchCriteria));
-	    	
-			if (howAsc.equals("recently")|| howAsc.equals("")) {
-				model.addAttribute("articles", articleService.listSearchBest(searchCriteria));
-				System.out.println("최신순 정렬");
-			} else if (howAsc.equals("viewcnt")) {
-				model.addAttribute("articles", articleService.listSearchBestbyviewcnt(searchCriteria));
-				System.out.println("조회순 정렬");
-			}
-	    	
+			model.addAttribute("articles", articleService.listSearchBestbyviewcnt(searchCriteria));
+
 	    	model.addAttribute("pageMaker", pageMaker);
 	    	
 	    	return "article/search/list_best";

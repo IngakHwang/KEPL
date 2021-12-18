@@ -38,37 +38,17 @@
     	<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
-<!-- 	<bean id="uploadPath" class="java.lang.String">
+	<bean id="uploadPath" class="java.lang.String">
         <constructor-arg value="/opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/upload">
         </constructor-arg>
     </bean>
     
-    프로필 이미지 파일 저장 경로 설정
+   
     <bean id="uimagePath" class="java.lang.String">
         <constructor-arg value="/opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/dist/img/profile">
         </constructor-arg>
-    </bean> -->
-    
-    <bean id="uploadPath" class="java.lang.String">
-        <constructor-arg value="C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\upload">
-        </constructor-arg>
     </bean>
     
-    프로필 이미지 파일 저장 경로 설정
-    <bean id="uimagePath" class="java.lang.String">
-        <constructor-arg value="C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\dist\\img\\profile">
-        </constructor-arg>
-    </bean>
-
-	<!-- 	
-	C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\upload
-	C:\\Users\\USER\\eclipse-workspace\\KEPL\\src\\main\\webapp\\resources\\dist\\img\\profile
-	-->
-	
-    <!-- 
-    /opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/upload
-    /opt/tomcat/apache-tomcat-9.0.56/webapps/KEPL/resources/dist/img/profile
-    -->
 
 	<tx:annotation-driven/>
     
