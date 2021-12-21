@@ -30,18 +30,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 		         contentType: "application/json",
 		         data :{"addr":$("#addr").val()},
 			     success:function (data,textStatus){
-			    	  //alert(data); // 2번
 			    	  resultText = JSON.parse(data);
-			    	  //text = resultText.results[0].region.area1.name+","+resultText.results[1]
 			    	  var lang1 = resultText.addresses[0].x;
 			    	  var lat1 = resultText.addresses[0].y;
-			    	  //alert(lat1+", "+lang1);
 			    	  $('#span_lat').text(lat1);
 			    	  $('#span_lang').text(lang1);
-			    	  //var result = resultText.meta[0].totalCount;
-			    	  //alert(result);
-			    	 // alert(text); // 3번
-			    	 // $('#message').text(text);
 			    	  var mapOptions = {
 							    center: new naver.maps.LatLng(lat1, lang1),
 							    zoom: 15
