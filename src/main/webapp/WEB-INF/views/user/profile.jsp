@@ -109,8 +109,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 													<thead>
 														<tr>
 															<th style="width: 10%">번호</th>
-															<th style="width: 70%">제목</th>
-															<th style="width: 20%">작성일자</th>
+															<th style="width: 60%">제목</th>
+															<th style="width: 30%">작성일자</th>
 														</tr>
 													</thead>
 													<tbody>
