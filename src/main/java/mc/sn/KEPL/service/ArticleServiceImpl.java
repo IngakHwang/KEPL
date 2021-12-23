@@ -125,8 +125,8 @@ public class ArticleServiceImpl implements ArticleService {
 	public String geocode(String words) {
 		// TODO Auto-generated method stub
 		 StringBuffer res = null;
-		 String clientId = "lyjg8pre32";
-	     String clientSecret = "fdUBU1j5br9M0FdorEakQ0rCXD7fQsKmUjBhOJUL"; 
+		 String clientId = "5o9yozbfd3";
+	     String clientSecret = "Gkd0anjzqlGx6ZXdeqh3MpxBKLXOBu20btkzhMg5"; 
 	     try {
 	         String text = URLEncoder.encode(words, "UTF-8");
 	         String apiURL = "https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=" + text;

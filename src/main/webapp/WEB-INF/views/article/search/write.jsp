@@ -9,7 +9,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <%@ include file = "../../include/head.jsp" %>
 
 <script type="text/javascript" src="${path}/resources/js/jquery-3.6.0.min.js"></script>
-<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=lyjg8pre32"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=5o9yozbfd3"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		var i=0;
